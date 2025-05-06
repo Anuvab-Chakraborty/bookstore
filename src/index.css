@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+/* Add to index.css or wherever you define custom styles */
+.glass-input {
+  @apply w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/80 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-purple-500;
+}
+
