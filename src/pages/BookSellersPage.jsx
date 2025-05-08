@@ -213,19 +213,20 @@ export default function BookSellersPage() {
   const token = useAuthStore((state) => state.token);
   const role = useAuthStore((state) => state.role);
 
+  const fetchSellers = async () => {
+    try {
+      const res = await api.get(`/book_availability/${book_id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSellers(res.data);
+    } catch (err) {
+      toast.error('Failed to fetch sellers');
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchSellers = async () => {
-      try {
-        const res = await api.get(`/book_availability/${book_id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setSellers(res.data);
-      } catch (err) {
-        toast.error('Failed to fetch sellers');
-      } finally {
-        setLoading(false);
-      }
-    };
+    
 
     fetchSellers();
   }, [book_id, token]);
@@ -256,7 +257,7 @@ export default function BookSellersPage() {
         {
           book_id,
           seller_id: selectedSeller.seller_id,
-          quantity: qty,
+          qty: qty,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -264,6 +265,7 @@ export default function BookSellersPage() {
       );
       toast.success(`✅ Bought ${qty} book(s) from ${selectedSeller.seller_name}`);
       closeModals();
+      fetchSellers();
     } catch (err) {
       toast.error('❌ Failed to buy book');
     }
@@ -276,8 +278,8 @@ export default function BookSellersPage() {
         {
           book_id,
           seller_id: selectedSeller.seller_id,
-          quantity: qty,
-          return_date: returnDate,
+          qty: qty,
+          return_by: returnDate,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -285,6 +287,7 @@ export default function BookSellersPage() {
       );
       toast.success(`✅ Rented ${qty} book(s) from ${selectedSeller.seller_name}`);
       closeModals();
+      fetchSellers();
     } catch (err) {
       toast.error('❌ Failed to rent book');
     }
